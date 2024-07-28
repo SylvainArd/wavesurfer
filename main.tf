@@ -33,7 +33,8 @@ resource "aws_instance" "web" {
   provisioner "remote-exec" {
     inline = [
       "mkdir -p /home/ec2-user/ansible/",
-      "mkdir -p /home/ec2-user/project/"
+      "mkdir -p /home/ec2-user/project/",
+      "sudo chown -R ec2-user:ec2-user /home/ec2-user/"
     ]
   }
 
@@ -55,7 +56,6 @@ resource "aws_instance" "web" {
   provisioner "remote-exec" {
     inline = [
       "sudo chmod 600 /home/ec2-user/.ssh/id_rsa",
-      "sudo chown -R ec2-user:ec2-user /home/ec2-user/",
       "sudo yum update -y",
       "sudo yum install -y python3-pip",
       "pip3 install ansible",
