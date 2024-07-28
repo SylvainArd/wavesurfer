@@ -32,13 +32,19 @@ resource "aws_instance" "web" {
 
   provisioner "remote-exec" {
     inline = [
-      "mkdir -p /home/ec2-user/ansible/"
+      "mkdir -p /home/ec2-user/ansible/",
+      "mkdir -p /home/ec2-user/project/"
     ]
   }
 
   provisioner "file" {
     source      = "ansible/"
     destination = "/home/ec2-user/ansible/"
+  }
+
+  provisioner "file" {
+    source      = "project/"
+    destination = "/home/ec2-user/project/"
   }
 
   provisioner "file" {
