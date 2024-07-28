@@ -38,10 +38,53 @@
         group: ec2-user
         mode: '0755'
 
-    - name: Copy application files
+    - name: Create public directory
+      file:
+        path: /var/www/wavesurfer-app/public
+        state: directory
+        owner: ec2-user
+        group: ec2-user
+        mode: '0755'
+
+    - name: Create uploads directory
+      file:
+        path: /var/www/wavesurfer-app/uploads
+        state: directory
+        owner: ec2-user
+        group: ec2-user
+        mode: '0755'
+
+    - name: Copy public files
       copy:
-        src: /home/ec2-user/project/
-        dest: /var/www/wavesurfer-app/
+        src: /home/ec2-user/project/public/
+        dest: /var/www/wavesurfer-app/public/
+        owner: ec2-user
+        group: ec2-user
+        mode: '0755'
+        remote_src: yes
+
+    - name: Copy app.js
+      copy:
+        src: /home/ec2-user/project/app.js
+        dest: /var/www/wavesurfer-app/app.js
+        owner: ec2-user
+        group: ec2-user
+        mode: '0755'
+        remote_src: yes
+
+    - name: Copy package.json
+      copy:
+        src: /home/ec2-user/project/package.json
+        dest: /var/www/wavesurfer-app/package.json
+        owner: ec2-user
+        group: ec2-user
+        mode: '0755'
+        remote_src: yes
+
+    - name: Copy package-lock.json
+      copy:
+        src: /home/ec2-user/project/package-lock.json
+        dest: /var/www/wavesurfer-app/package-lock.json
         owner: ec2-user
         group: ec2-user
         mode: '0755'
