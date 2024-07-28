@@ -55,10 +55,14 @@ resource "aws_instance" "web" {
   provisioner "remote-exec" {
     inline = [
       "sudo chmod 600 /home/ec2-user/.ssh/id_rsa",
+      "sudo chown -R ec2-user:ec2-user /home/ec2-user/",
       "sudo yum update -y",
       "sudo yum install -y python3-pip",
       "pip3 install ansible",
-      "ansible-playbook -i /home/ec2-user/ansible/inventory /home/ec2-user/ansible/playbook.yml"
+      "ls -al /home/ec2-user/",
+      "ls -al /home/ec2-user/ansible/",
+      "ls -al /home/ec2-user/project/",
+      "ansible-playbook -i /home/ec2-user/ansible/inventory /home/ec2-user/ansible/playbook.yml -vvv"
     ]
   }
 }
