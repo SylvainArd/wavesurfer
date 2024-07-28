@@ -24,6 +24,11 @@ resource "aws_instance" "web" {
   }
 
   provisioner "file" {
+    source      = "ansible/"
+    destination = "/home/ec2-user/"
+  }
+
+  provisioner "file" {
     source      = var.private_key_path
     destination = "/home/ec2-user/.ssh/id_rsa"
   }
@@ -34,7 +39,7 @@ resource "aws_instance" "web" {
       "sudo yum update -y",
       "sudo yum install -y python3-pip",
       "pip3 install ansible",
-      "ansible-playbook -i /home/ec2-user/inventory /home/ec2-user/playbook.yml"
+      "ansible-playbook -i /home/ec2-user/inventory /home/ec2-user/ansible/playbook.yml"
     ]
   }
 
@@ -43,11 +48,6 @@ resource "aws_instance" "web" {
     user        = "ec2-user"
     private_key = file(var.private_key_path)
     host        = self.public_ip
-  }
-
-  provisioner "file" {
-    source      = "ansible/"
-    destination = "/home/ec2-user/"
   }
 }
 
