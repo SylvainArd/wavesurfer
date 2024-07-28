@@ -15,12 +15,25 @@ resource "aws_instance" "web" {
     Name = "WavesurferApp"
   }
 
-  key_name      = aws_key_pair.deployer.key_name
+  key_name = aws_key_pair.deployer.key_name
 
   security_groups = [aws_security_group.web_sg.name]
 
   provisioner "local-exec" {
     command = "echo ${self.public_ip} > ip_address.txt"
+  }
+
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    private_key = file(var.private_key_path)
+    host        = self.public_ip
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "mkdir -p /home/ec2-user/ansible/"
+    ]
   }
 
   provisioner "file" {
@@ -41,13 +54,6 @@ resource "aws_instance" "web" {
       "pip3 install ansible",
       "ansible-playbook -i /home/ec2-user/ansible/inventory /home/ec2-user/ansible/playbook.yml"
     ]
-  }
-
-  connection {
-    type        = "ssh"
-    user        = "ec2-user"
-    private_key = file(var.private_key_path)
-    host        = self.public_ip
   }
 }
 
