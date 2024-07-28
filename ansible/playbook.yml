@@ -25,6 +25,11 @@
         name: pm2
         global: yes
 
+    - name: Install Nginx
+      yum:
+        name: nginx
+        state: present
+
     - name: Create project directory
       file:
         path: /var/www/wavesurfer-app
@@ -60,3 +65,37 @@
       command: pm2 save
       args:
         chdir: /var/www/wavesurfer-app/
+
+    - name: Configure Nginx
+      copy:
+        content: |
+          server {
+              listen 80;
+
+              server_name _;
+
+              location / {
+                  proxy_pass http://localhost:3000;
+                  proxy_http_version 1.1;
+                  proxy_set_header Upgrade $http_upgrade;
+                  proxy_set_header Connection 'upgrade';
+                  proxy_set_header Host $host;
+                  proxy_cache_bypass $http_upgrade;
+              }
+
+              location /uploads/ {
+                  alias /var/www/wavesurfer-app/uploads/;
+              }
+          }
+        dest: /etc/nginx/conf.d/wavesurfer.conf
+
+    - name: Remove default Nginx configuration
+      file:
+        path: /etc/nginx/conf.d/default.conf
+        state: absent
+
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+        enabled: yes
