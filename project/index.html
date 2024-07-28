@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload MP3 and Display Sonogram</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Upload MP3 and Display Sonogram</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="file" accept="audio/mp3">
+        <button type="submit">Upload</button>
+    </form>
+    <div id="waveform"></div>
+    
+    <script src="wavesurfer.min.js"></script>
+    <script>
+        const form = document.getElementById('uploadForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const response = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const filename = await response.text();
+            if (filename) {
+                const wavesurfer = WaveSurfer.create({
+                    container: '#waveform'
+                });
+                wavesurfer.load(`/uploads/${filename}`);
+            }
+        });
+    </script>
+</body>
+</html>

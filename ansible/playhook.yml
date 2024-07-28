@@ -1,0 +1,61 @@
+---
+- name: Setup Node.js and Wavesurfer.js
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Update and upgrade yum packages
+      yum:
+        name: "*"
+        state: latest
+        update_cache: yes
+
+    - name: Install Node.js
+      yum:
+        name: nodejs
+        state: present
+
+    - name: Install npm
+      yum:
+        name: npm
+        state: present
+
+    - name: Install PM2
+      npm:
+        name: pm2
+        global: yes
+
+    - name: Create project directory
+      file:
+        path: /var/www/wavesurfer-app
+        state: directory
+        owner: ec2-user
+        group: ec2-user
+
+    - name: Copy application files
+      copy:
+        src: ../project/
+        dest: /var/www/wavesurfer-app/
+        owner: ec2-user
+        group: ec2-user
+        mode: '0755'
+
+    - name: Install project dependencies
+      command: npm install
+      args:
+        chdir: /var/www/wavesurfer-app/
+
+    - name: Start the application with PM2
+      command: pm2 start app.js
+      args:
+        chdir: /var/www/wavesurfer-app/
+
+    - name: Setup PM2 to start on boot
+      command: pm2 startup
+      args:
+        chdir: /var/www/wavesurfer-app/
+
+    - name: Save PM2 process list
+      command: pm2 save
+      args:
+        chdir: /var/www/wavesurfer-app/
