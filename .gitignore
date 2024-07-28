@@ -7,3 +7,4 @@ tfplan
 .terraform.lock.hcl
 terraform.tfstate
 .terraform.tfstate.lock.info
+project/node_modules
