@@ -25,7 +25,7 @@ resource "aws_instance" "web" {
 
   provisioner "file" {
     source      = "ansible/"
-    destination = "/home/ec2-user/"
+    destination = "/home/ec2-user/ansible/"
   }
 
   provisioner "file" {
@@ -39,7 +39,7 @@ resource "aws_instance" "web" {
       "sudo yum update -y",
       "sudo yum install -y python3-pip",
       "pip3 install ansible",
-      "ansible-playbook -i /home/ec2-user/inventory /home/ec2-user/ansible/playbook.yml"
+      "ansible-playbook -i /home/ec2-user/ansible/inventory /home/ec2-user/ansible/playbook.yml"
     ]
   }
 
